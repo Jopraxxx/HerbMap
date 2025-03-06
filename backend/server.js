@@ -5,10 +5,11 @@ const authRoutes = require("./authRoutes");
 const app = express();
 
 app.use(cors());
-app.use(express.json());
-app.use("/auth", authRoutes);
+app.use(express.json()); // ✅ This MUST be before routes
 
-const PORT = process.env.PORT || 5000;
+app.use("/auth", authRoutes); // ✅ This must match the frontend request
+
+const PORT = process.env.PORT || 10000  ;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

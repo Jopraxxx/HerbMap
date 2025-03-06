@@ -16,32 +16,34 @@ const SignUpScreen = ({ navigation }) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSignUp = async () => {
         if (!name || !email || !password) {
-            alert("Please fill in all fields.");
+            Alert.alert("Error", "Please fill in all fields.");
             return;
         }
-
+    
         try {
-            const response = await fetch("http://192.168.43.114:5000/auth/signup", {
+            const response = await fetch("https://herbmap-a1g3.onrender.com/auth/signup", { 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, email, password }),
             });
-
+    
             const data = await response.json();
+    
             if (response.ok) {
-                alert("Account created! Please log in.");
-                navigation.navigate("Login");
+                Alert.alert("Success", "Sign-up successful!");
+                navigation.replace("Login"); // Redirect to login screen
             } else {
-                alert(data.message);
+                Alert.alert("Error", data.message);
             }
         } catch (error) {
-            alert("An error occurred. Try again.");
+            Alert.alert("Error", "Network error. Check server connection.");
         }
     };
-
+    
     return (
         <SafeAreaView style={styles.container}>
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -78,8 +80,8 @@ const SignUpScreen = ({ navigation }) => {
                     />
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                    <Text style={styles.buttonText}>Sign Up</Text>
+                <TouchableOpacity style={styles.button} onPress={handleSignUp} disabled={loading}>
+                    <Text style={styles.buttonText}>{loading ? "Signing Up..." : "Sign Up"}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => navigation.navigate("Login")}>
