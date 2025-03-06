@@ -9,16 +9,14 @@ const SECRET_KEY = process.env.SECRET_KEY || "your_secret_key";
 
 // Sign Up
 router.post("/signup", (req, res) => {
-    const { name, email, password } = req.body;
+    console.log("Received signup request:", req.body); // Add this line
 
+    const { name, email, password } = req.body;
     if (!name || !email || !password) {
         return res.status(400).json({ message: "All fields are required." });
     }
 
     db.get(`SELECT * FROM users WHERE email = ?`, [email], (err, user) => {
-        if (err) {
-            return res.status(500).json({ message: "Database error.", error: err.message });
-        }
         if (user) {
             return res.status(400).json({ message: "User already exists." });
         }
@@ -29,7 +27,7 @@ router.post("/signup", (req, res) => {
             [name, email, hashedPassword],
             function (err) {
                 if (err) {
-                    return res.status(500).json({ message: "Database insert error.", error: err.message });
+                    return res.status(400).json({ message: "Database error." });
                 }
                 res.json({ message: "User registered successfully!" });
             }

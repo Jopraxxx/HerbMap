@@ -31,7 +31,9 @@ const SignUpScreen = ({ navigation }) => {
                 body: JSON.stringify({ name, email, password }),
             });
     
-            const data = await response.json();
+            const userData = { name, email, password };
+                console.log("Sending signup request with data:", userData);
+
     
             if (response.ok) {
                 Alert.alert("Success", "Sign-up successful!");
@@ -43,6 +45,7 @@ const SignUpScreen = ({ navigation }) => {
             Alert.alert("Error", "Network error. Check server connection.");
         }
     };
+    
     
     return (
         <SafeAreaView style={styles.container}>

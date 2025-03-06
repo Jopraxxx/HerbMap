@@ -1,15 +1,30 @@
 const express = require("express");
 const cors = require("cors");
-const authRoutes = require("./authRoutes");
+const dotenv = require("dotenv");
+const authRoutes = require("./routes/authRoutes"); // Ensure correct path
+
+dotenv.config(); // Load environment variables
 
 const app = express();
 
 app.use(cors());
-app.use(express.json()); // ✅ This MUST be before routes
+app.use(express.json()); // ✅ Middleware order matters!
 
-app.use("/auth", authRoutes); // ✅ This must match the frontend request
+// Routes
+app.use("/auth", authRoutes); // ✅ Must match frontend request
 
-const PORT = process.env.PORT || 10000  ;
+// Default Route
+app.get("/", (req, res) => {
+    res.send("HerbMap API is running...");
+});
+
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Internal Server Error" });
+});
+
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`✅ Server running on port ${PORT}`);
 });
